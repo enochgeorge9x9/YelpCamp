@@ -1,5 +1,8 @@
 const Campground = require('../models/campGround')
 const { cloudinary } = require('../cloudinary')
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({accessToken: mapBoxToken})
 
 
 //Main page of Campgrounds
@@ -17,11 +20,17 @@ module.exports.renderNewForm = (req, res) => {
 
 //Creating a new Campground
 module.exports.createNewCampground = async (req, res, next) => {
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+    }).send()
     const newCampground = req.body.campground;
     const campground = new Campground({ ...newCampground });
+    campground.geometry = geoData.body.features[0].geometry;
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
     campground.author = req.user._id
     await campground.save()
+    // console.log(campground)
     req.flash('success', 'You have Successfully created a New Campground')
     res.redirect(`/campgrounds/${campground._id}`)
 }
