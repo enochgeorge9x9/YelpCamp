@@ -1,7 +1,7 @@
 <% layout('layouts/boilerplate.ejs') %>
     <div class="row">
         <h1 class="text-center">Edit Campground</h1>
-        <div class="col-6 offset-3">
+        <div class="col-md-6 offset-md-3">
             <form action="/campgrounds/<%=campground._id%>?_method=PUT" method="POST" class="needs-validation"
                 enctype="multipart/form-data" novalidate>
                 <div class="mb-3">
@@ -42,9 +42,9 @@
                 <div class="mb-3">
                     <% campground.images.forEach((img, i)=> { %>
                         <img src="<%=img.thumbnail%>" class="img-thumbnail" alt="">
-                        <div class="form-check">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label" for="image-<%=i%>">Delete?</label>
                             <input class="form-check-input" id="image-<%=i%>" type="checkbox" name="deleteImages[]" value="<%=img.filename%>">
-                            <label for="image-<%=i%>">Delete?</label>
                         </div>
                         <% }) %>
                 </div>
